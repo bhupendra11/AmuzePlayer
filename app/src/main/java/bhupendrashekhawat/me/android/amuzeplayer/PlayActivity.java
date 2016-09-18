@@ -16,6 +16,7 @@ import android.widget.Toast;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Random;
 
 public class PlayActivity extends AppCompatActivity implements MediaPlayer.OnCompletionListener {
 
@@ -34,6 +35,8 @@ public class PlayActivity extends AppCompatActivity implements MediaPlayer.OnCom
     private SeekBar songProgressBar;
 
     private int currentSongIndex =0;
+    private boolean isShuffle = false;
+    private boolean isRepeat = false;
     //  private Utilities utils;
 
     final String SONG_INDEX = "songIndex";
@@ -111,13 +114,24 @@ public class PlayActivity extends AppCompatActivity implements MediaPlayer.OnCom
 
             @Override
             public void onClick(View arg0) {
-                if(currentSongIndex > 0){
-                    playSong(currentSongIndex - 1);
-                    currentSongIndex = currentSongIndex - 1;
-                }else{
-                    // play last song
-                    playSong(songsList.size() - 1);
-                    currentSongIndex = songsList.size() - 1;
+                // check for repeat is ON or OFF
+                if(isRepeat){
+                    // repeat is on play same song again
+                    playSong(currentSongIndex);
+                } else if(isShuffle){
+                    // shuffle is on - play a random song
+                    Random rand = new Random();
+                    currentSongIndex = rand.nextInt((songsList.size() - 1) - 0 + 1) + 0;
+                    playSong(currentSongIndex);
+                } else {
+                    if (currentSongIndex > 0) {
+                        playSong(currentSongIndex - 1);
+                        currentSongIndex = currentSongIndex - 1;
+                    } else {
+                        // play last song
+                        playSong(songsList.size() - 1);
+                        currentSongIndex = songsList.size() - 1;
+                    }
                 }
 
             }
@@ -132,16 +146,75 @@ public class PlayActivity extends AppCompatActivity implements MediaPlayer.OnCom
 
             @Override
             public void onClick(View arg0) {
-                // check if next song is there or not
-                if(currentSongIndex < (songsList.size() - 1)){
-                    playSong(currentSongIndex + 1);
-                    currentSongIndex = currentSongIndex + 1;
-                }else{
-                    // play first song
-                    playSong(0);
-                    currentSongIndex = 0;
+                // check for repeat is ON or OFF
+                if(isRepeat){
+                    // repeat is on play same song again
+                    playSong(currentSongIndex);
+                } else if(isShuffle){
+                    // shuffle is on - play a random song
+                    Random rand = new Random();
+                    currentSongIndex = rand.nextInt((songsList.size() - 1) - 0 + 1) + 0;
+                    playSong(currentSongIndex);
+                } else {
+                    // check if next song is there or not
+                    if (currentSongIndex < (songsList.size() - 1)) {
+                        playSong(currentSongIndex + 1);
+                        currentSongIndex = currentSongIndex + 1;
+                    } else {
+                        // play first song
+                        playSong(0);
+                        currentSongIndex = 0;
+                    }
                 }
 
+            }
+        });
+
+        /**
+         * Button Click event for Repeat button
+         * Enables repeat flag to true
+         * */
+        btnLoop.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View arg0) {
+                if(isRepeat){
+                    isRepeat = false;
+                    Toast.makeText(getApplicationContext(), "Repeat is OFF", Toast.LENGTH_SHORT).show();
+                    btnLoop.setImageResource(R.drawable.btn_loop);
+                }else{
+                    // make repeat to true
+                    isRepeat = true;
+                    Toast.makeText(getApplicationContext(), "Repeat is ON", Toast.LENGTH_SHORT).show();
+                    // make shuffle to false
+                    isShuffle = false;
+                    btnLoop.setImageResource(R.drawable.btn_loop_focused);
+                    btnShuffle.setImageResource(R.drawable.btn_shuffle);
+                }
+            }
+        });
+
+        /**
+         * Button Click event for Shuffle button
+         * Enables shuffle flag to true
+         * */
+        btnShuffle.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View arg0) {
+                if(isShuffle){
+                    isShuffle = false;
+                    Toast.makeText(getApplicationContext(), "Shuffle is OFF", Toast.LENGTH_SHORT).show();
+                    btnShuffle.setImageResource(R.drawable.btn_shuffle);
+                }else{
+                    // make repeat to true
+                    isShuffle= true;
+                    Toast.makeText(getApplicationContext(), "Shuffle is ON", Toast.LENGTH_SHORT).show();
+                    // make shuffle to false
+                    isRepeat = false;
+                    btnShuffle.setImageResource(R.drawable.btn_shuffle_focused);
+                    btnLoop.setImageResource(R.drawable.btn_loop);
+                }
             }
         });
 
@@ -184,6 +257,25 @@ public class PlayActivity extends AppCompatActivity implements MediaPlayer.OnCom
 
     @Override
     public void onCompletion(MediaPlayer mediaPlayer) {
-
+        // check for repeat is ON or OFF
+        if(isRepeat){
+            // repeat is on play same song again
+            playSong(currentSongIndex);
+        } else if(isShuffle){
+            // shuffle is on - play a random song
+            Random rand = new Random();
+            currentSongIndex = rand.nextInt((songsList.size() - 1) - 0 + 1) + 0;
+            playSong(currentSongIndex);
+        } else{
+            // no repeat or shuffle ON - play next song
+            if(currentSongIndex < (songsList.size() - 1)){
+                playSong(currentSongIndex + 1);
+                currentSongIndex = currentSongIndex + 1;
+            }else{
+                // play first song
+                playSong(0);
+                currentSongIndex = 0;
+            }
+        }
     }
 }
