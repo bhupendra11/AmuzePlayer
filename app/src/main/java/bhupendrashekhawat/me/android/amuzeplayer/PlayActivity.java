@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.MediaPlayer;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -18,7 +19,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
 
-public class PlayActivity extends AppCompatActivity implements MediaPlayer.OnCompletionListener {
+public class PlayActivity extends AppCompatActivity implements MediaPlayer.OnCompletionListener, SeekBar.OnSeekBarChangeListener {
 
     // Media Player
     private MediaPlayer mp;
@@ -28,12 +29,20 @@ public class PlayActivity extends AppCompatActivity implements MediaPlayer.OnCom
     private ImageButton btnNext;
     private ImageButton btnLoop;
     private ImageButton btnShuffle;
-
-    private TextView songTitleLabel;
     private ArrayList<HashMap<String, String>> songsList = new ArrayList<HashMap<String, String>>();
     private ImageView blurAlbumArt;
     private SeekBar songProgressBar;
 
+    private TextView songTitleLabel;
+    private TextView songCurrentDurationLabel;
+    private TextView songTotalDurationLabel;
+
+    // Handler to update UI timer, progress bar etc,.
+    private Handler mHandler = new Handler();
+    private Utilities utils;
+
+    private int seekForwardTime = 5000; // 5000 milliseconds
+    private int seekBackwardTime = 5000; // 5000 milliseconds
     private int currentSongIndex =0;
     private boolean isShuffle = false;
     private boolean isRepeat = false;
@@ -56,7 +65,13 @@ public class PlayActivity extends AppCompatActivity implements MediaPlayer.OnCom
         btnLoop = (ImageButton) findViewById(R.id.btnLoop);
         btnShuffle = (ImageButton) findViewById(R.id.btnShuffle);
 
+        utils = new Utilities();
+        songProgressBar = (SeekBar) findViewById(R.id.songProgressBar);
+
         songTitleLabel = (TextView) findViewById(R.id.song_title_label);
+        songCurrentDurationLabel = (TextView) findViewById(R.id.song_current_duration_label);
+        songTotalDurationLabel = (TextView) findViewById(R.id.song_total_duration_label);
+
         // Getting all songs list
         songsList = mediaManager.getPlayList();
         blurBitmap = new BlurBitmap();
@@ -65,6 +80,7 @@ public class PlayActivity extends AppCompatActivity implements MediaPlayer.OnCom
 
 
         //Listeners
+        songProgressBar.setOnSeekBarChangeListener(this); // Important
         mp.setOnCompletionListener(this); // Important
 
 
@@ -244,6 +260,9 @@ public class PlayActivity extends AppCompatActivity implements MediaPlayer.OnCom
             songProgressBar.setProgress(0);
             songProgressBar.setMax(100);
 
+            // Updating progress bar
+            updateProgressBar();
+
 
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
@@ -253,6 +272,36 @@ public class PlayActivity extends AppCompatActivity implements MediaPlayer.OnCom
             e.printStackTrace();
         }
     }
+
+    /**
+     * Update timer on seekbar
+     * */
+    public void updateProgressBar() {
+        mHandler.postDelayed(mUpdateTimeTask, 100);
+    }
+
+    /**
+     * Background Runnable thread
+     * */
+    private Runnable mUpdateTimeTask = new Runnable() {
+        public void run() {
+            long totalDuration = mp.getDuration();
+            long currentDuration = mp.getCurrentPosition();
+
+            // Displaying Total Duration time
+            songTotalDurationLabel.setText(""+utils.milliSecondsToTimer(totalDuration));
+            // Displaying time completed playing
+            songCurrentDurationLabel.setText(""+utils.milliSecondsToTimer(currentDuration));
+
+            // Updating progress bar
+            int progress = (int)(utils.getProgressPercentage(currentDuration, totalDuration));
+            //Log.d("Progress", ""+progress);
+            songProgressBar.setProgress(progress);
+
+            // Running this thread after 100 milliseconds
+            mHandler.postDelayed(this, 100);
+        }
+    };
 
 
     @Override
@@ -277,5 +326,44 @@ public class PlayActivity extends AppCompatActivity implements MediaPlayer.OnCom
                 currentSongIndex = 0;
             }
         }
+    }
+
+    /**
+     *
+     * */
+    @Override
+    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromTouch) {
+
+    }
+
+    /**
+     * When user starts moving the progress handler
+     * */
+    @Override
+    public void onStartTrackingTouch(SeekBar seekBar) {
+        // remove message Handler from updating progress bar
+        mHandler.removeCallbacks(mUpdateTimeTask);
+    }
+
+    /**
+     * When user stops moving the progress hanlder
+     * */
+    @Override
+    public void onStopTrackingTouch(SeekBar seekBar) {
+        mHandler.removeCallbacks(mUpdateTimeTask);
+        int totalDuration = mp.getDuration();
+        int currentPosition = utils.progressToTimer(seekBar.getProgress(), totalDuration);
+
+        // forward or backward to certain seconds
+        mp.seekTo(currentPosition);
+
+        // update timer progress again
+        updateProgressBar();
+    }
+
+    @Override
+    public void onDestroy(){
+        super.onDestroy();
+        mp.release();
     }
 }
