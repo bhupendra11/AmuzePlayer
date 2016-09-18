@@ -1,15 +1,19 @@
 package bhupendrashekhawat.me.android.amuzeplayer;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -20,6 +24,7 @@ public class MainActivity extends AppCompatActivity  implements ActivityCompat.O
     private final String LOG_TAG = MediaManager.class.getSimpleName();
 
     final String SONG_TITLE = "songTitle";
+    final String SONG_INDEX = "songIndex";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,7 +36,7 @@ public class MainActivity extends AppCompatActivity  implements ActivityCompat.O
         Log.d(LOG_TAG, "Storage access permission = " +isStoragePermissionGranted);
 
         ListView listView = (ListView) findViewById(R.id.songList);
-        ArrayList<HashMap<String, String>> songsListData = new ArrayList<HashMap<String, String>>();
+        final ArrayList<HashMap<String, String>> songsListData = new ArrayList<HashMap<String, String>>();
 
         MediaManager mediaManager = new MediaManager();
 
@@ -50,11 +55,24 @@ public class MainActivity extends AppCompatActivity  implements ActivityCompat.O
         }
 
         // Adding menuItems to ListView
-        ListAdapter adapter = new SimpleAdapter(this, songsListData,
+        final ListAdapter adapter = new SimpleAdapter(this, songsListData,
                 R.layout.song_list_item, new String[] {SONG_TITLE}, new int[] {
                 R.id.song_item });
 
         listView.setAdapter(adapter);
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
+                int songIndex = position;
+                HashMap<String, String> song = songsListData.get(songIndex);
+                Toast.makeText(getApplicationContext(), "Click on "+ song.get(SONG_TITLE)
+                        , Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(getApplicationContext() , PlayActivity.class);
+                intent.putExtra(SONG_INDEX, songIndex);
+                startActivity(intent);
+            }
+        });
 
 
     }
@@ -89,6 +107,8 @@ public class MainActivity extends AppCompatActivity  implements ActivityCompat.O
             //resume tasks needing this permission
         }
     }
+
+
 
 
 }

@@ -1,14 +1,9 @@
 package bhupendrashekhawat.me.android.amuzeplayer;
 
-import android.Manifest;
-import android.content.pm.PackageManager;
-import android.os.Build;
-import android.os.Environment;
-import android.support.v4.app.ActivityCompat;
+
 import android.util.Log;
 
 import java.io.File;
-import java.io.FilenameFilter;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -35,20 +30,6 @@ public class MediaManager {
      */
     public ArrayList<HashMap<String, String>> getPlayList() {
         Log.d(LOG_TAG, "Inside getPlayList()");
-       /* File home = Environment.getExternalStorageDirectory();
-
-        if (home.listFiles(new FileExtensionFilter()).length > 0) {
-            for (File file : home.listFiles(new FileExtensionFilter())) {
-                HashMap<String, String> song = new HashMap<String, String>();
-                song.put(SONG_TITLE, file.getName().substring(0, (file.getName().length() - 4)));
-                song.put(SONG_PATH, file.getPath());
-
-                // Adding each song to SongList
-                songsList.add(song);
-            }
-        }
-        // return songs list array
-        return songsList;*/
 
         System.out.println(MEDIA_PATH);
         if (MEDIA_PATH != null) {
@@ -103,14 +84,5 @@ public class MediaManager {
 
 
 
-    /**
-     * Class to filter files which are having .mp3 extension
-     */
-    /*class FileExtensionFilter implements FilenameFilter {
-        public boolean accept(File dir, String name) {
 
-            Log.d("File Name ", name);
-            return (name.endsWith(".mp3") || name.endsWith(".MP3"));
-        }
-    }*/
 }
