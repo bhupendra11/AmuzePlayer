@@ -14,7 +14,7 @@
 
     <!-- Backward Button -->
     <ImageButton
-        android:id="@+id/btnBackward"
+        android:id="@+id/btnShuffle"
         android:src="@drawable/btn_shuffle"
         android:layout_height="wrap_content"
         android:layout_width="0dp"
@@ -46,7 +46,7 @@
         android:background="@null"/>
     <!-- Forward Button -->
     <ImageButton
-        android:id="@+id/btnForward"
+        android:id="@+id/btnLoop"
         android:src="@drawable/btn_loop"
         android:layout_width="0dp"
         android:layout_weight="1"
