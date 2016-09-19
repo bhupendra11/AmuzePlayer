@@ -1,4 +1,4 @@
-package bhupendrashekhawat.me.android.amuzeplayer;
+package bhupendrashekhawat.me.android.amuzeplayer.core;
 
 import android.Manifest;
 import android.content.Intent;
@@ -18,10 +18,17 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import bhupendrashekhawat.me.android.amuzeplayer.R;
+import bhupendrashekhawat.me.android.amuzeplayer.models.Track;
+import bhupendrashekhawat.me.android.amuzeplayer.utils.Utilities;
+
 public class MainActivity extends AppCompatActivity  implements ActivityCompat.OnRequestPermissionsResultCallback{
     // Songs list
     public ArrayList<HashMap<String, String>> songsList = new ArrayList<HashMap<String, String>>();
+    public ArrayList<Track> trackList = new ArrayList<Track>();
     private final String LOG_TAG = MediaManager.class.getSimpleName();
+    private Utilities utils;
+    private SongAdapter songAdapter;
 
     final String SONG_TITLE = "songTitle";
     final String SONG_INDEX = "songIndex";
@@ -37,6 +44,8 @@ public class MainActivity extends AppCompatActivity  implements ActivityCompat.O
 
         ListView listView = (ListView) findViewById(R.id.songList);
         final ArrayList<HashMap<String, String>> songsListData = new ArrayList<HashMap<String, String>>();
+        utils = new Utilities();
+
 
         MediaManager mediaManager = new MediaManager();
 
@@ -52,14 +61,32 @@ public class MainActivity extends AppCompatActivity  implements ActivityCompat.O
 
             // adding HashList to ArrayList
             songsListData.add(song);
+
+            //add Track infor to trackList for everysong
+            Track track = utils.getTrackInfo(this, i,songsList);
+            trackList.add(i, track);
+
+            Log.e(LOG_TAG , "TrackName : "+track.getmTitle()+" Album : "+track.getmAlbum() +"Artist : "+track.getmArtist() );
+
+
         }
 
+        Log.e(LOG_TAG, "TrackList size = "+trackList.size());
+
+        //Add adapter to the track items
+        songAdapter = new SongAdapter(this, new ArrayList<Track>());
+        songAdapter.addAll(trackList);
+        songAdapter.notifyDataSetChanged();
+        listView.setAdapter(songAdapter);
+
+
+
         // Adding menuItems to ListView
-        final ListAdapter adapter = new SimpleAdapter(this, songsListData,
+        /*final ListAdapter adapter = new SimpleAdapter(this, songsListData,
                 R.layout.song_list_item, new String[] {SONG_TITLE}, new int[] {
                 R.id.song_item });
 
-        listView.setAdapter(adapter);
+        listView.setAdapter(adapter);*/
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override

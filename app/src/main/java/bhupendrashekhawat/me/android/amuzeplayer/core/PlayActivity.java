@@ -1,8 +1,7 @@
-package bhupendrashekhawat.me.android.amuzeplayer;
+package bhupendrashekhawat.me.android.amuzeplayer.core;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.media.MediaPlayer;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
@@ -19,6 +18,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
 
+import bhupendrashekhawat.me.android.amuzeplayer.R;
+import bhupendrashekhawat.me.android.amuzeplayer.utils.Utilities;
+
 public class PlayActivity extends AppCompatActivity implements MediaPlayer.OnCompletionListener, SeekBar.OnSeekBarChangeListener {
 
     // Media Player
@@ -30,12 +32,14 @@ public class PlayActivity extends AppCompatActivity implements MediaPlayer.OnCom
     private ImageButton btnLoop;
     private ImageButton btnShuffle;
     private ArrayList<HashMap<String, String>> songsList = new ArrayList<HashMap<String, String>>();
+    private ImageView albumArt;
     private ImageView blurAlbumArt;
     private SeekBar songProgressBar;
 
     private TextView songTitleLabel;
     private TextView songCurrentDurationLabel;
     private TextView songTotalDurationLabel;
+    Bitmap albumArtBitmap =null;
 
     // Handler to update UI timer, progress bar etc,.
     private Handler mHandler = new Handler();
@@ -74,6 +78,9 @@ public class PlayActivity extends AppCompatActivity implements MediaPlayer.OnCom
 
         // Getting all songs list
         songsList = mediaManager.getPlayList();
+
+        albumArt = (ImageView) findViewById(R.id.album_art);
+
         blurBitmap = new BlurBitmap();
         blurAlbumArt = (ImageView) findViewById(R.id.album_art_blur);
         songProgressBar = (SeekBar) findViewById(R.id.songProgressBar);
@@ -84,10 +91,8 @@ public class PlayActivity extends AppCompatActivity implements MediaPlayer.OnCom
         mp.setOnCompletionListener(this); // Important
 
 
-        //Get the blurred Image for background behind the album art
-        Bitmap inputBitmap = BitmapFactory.decodeResource(getResources(),R.drawable.album_art_placeholder);  //getResources().getDrawable(R.drawable.album_art_placeholder);
-        Bitmap bluredAlbumartBitmap = BlurBitmap.blurImage(getApplicationContext(), inputBitmap);
-        blurAlbumArt.setImageBitmap(bluredAlbumartBitmap);
+        //change album art and blur image
+
 
 
         Intent intent = getIntent();
@@ -245,6 +250,8 @@ public class PlayActivity extends AppCompatActivity implements MediaPlayer.OnCom
     public void  playSong(int songIndex){
         // Play song
         try {
+
+            changeAlbumArtAndBlur(songIndex);
             mp.reset();
             mp.setDataSource(songsList.get(songIndex).get("songPath"));
             mp.prepare();
@@ -277,7 +284,12 @@ public class PlayActivity extends AppCompatActivity implements MediaPlayer.OnCom
      * Update timer on seekbar
      * */
     public void updateProgressBar() {
-        mHandler.postDelayed(mUpdateTimeTask, 100);
+        try {
+            mHandler.postDelayed(mUpdateTimeTask, 100);
+        }
+        catch (IllegalStateException e){
+            //do nothing
+        }
     }
 
     /**
@@ -285,21 +297,26 @@ public class PlayActivity extends AppCompatActivity implements MediaPlayer.OnCom
      * */
     private Runnable mUpdateTimeTask = new Runnable() {
         public void run() {
-            long totalDuration = mp.getDuration();
-            long currentDuration = mp.getCurrentPosition();
+            try {
+                long totalDuration = mp.getDuration();
+                long currentDuration = mp.getCurrentPosition();
 
-            // Displaying Total Duration time
-            songTotalDurationLabel.setText(""+utils.milliSecondsToTimer(totalDuration));
-            // Displaying time completed playing
-            songCurrentDurationLabel.setText(""+utils.milliSecondsToTimer(currentDuration));
+                // Displaying Total Duration time
+                songTotalDurationLabel.setText("" + utils.milliSecondsToTimer(totalDuration));
+                // Displaying time completed playing
+                songCurrentDurationLabel.setText("" + utils.milliSecondsToTimer(currentDuration));
 
-            // Updating progress bar
-            int progress = (int)(utils.getProgressPercentage(currentDuration, totalDuration));
-            //Log.d("Progress", ""+progress);
-            songProgressBar.setProgress(progress);
+                // Updating progress bar
+                int progress = (int) (utils.getProgressPercentage(currentDuration, totalDuration));
+                //Log.d("Progress", ""+progress);
+                songProgressBar.setProgress(progress);
 
-            // Running this thread after 100 milliseconds
-            mHandler.postDelayed(this, 100);
+                // Running this thread after 100 milliseconds
+                mHandler.postDelayed(this, 100);
+            }
+            catch (IllegalStateException e){
+                //do nothing
+            }
         }
     };
 
@@ -334,6 +351,14 @@ public class PlayActivity extends AppCompatActivity implements MediaPlayer.OnCom
     @Override
     public void onProgressChanged(SeekBar seekBar, int progress, boolean fromTouch) {
 
+        mHandler.removeCallbacks(mUpdateTimeTask);
+        int totalDuration = mp.getDuration();
+        int currentPosition = utils.progressToTimer(progress, totalDuration);
+
+
+        // Displaying time completed playing
+        songCurrentDurationLabel.setText("" + utils.milliSecondsToTimer(currentPosition));
+
     }
 
     /**
@@ -365,5 +390,17 @@ public class PlayActivity extends AppCompatActivity implements MediaPlayer.OnCom
     public void onDestroy(){
         super.onDestroy();
         mp.release();
+    }
+
+    public void changeAlbumArtAndBlur(int currentIndex){
+        //Set album art
+        albumArtBitmap = utils.getAlbumArt(this, currentIndex, songsList);
+        albumArt.setImageBitmap(albumArtBitmap);
+
+        //Get the blurred Image for background behind the album art
+        //Bitmap inputBitmap = BitmapFactory.decodeResource(getResources(),R.drawable.album_art_placeholder);
+
+        Bitmap bluredAlbumartBitmap = BlurBitmap.blurImage(getApplicationContext(), albumArtBitmap);
+        blurAlbumArt.setImageBitmap(bluredAlbumartBitmap);
     }
 }

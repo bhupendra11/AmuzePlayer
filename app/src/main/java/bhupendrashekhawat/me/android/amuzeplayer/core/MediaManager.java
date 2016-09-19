@@ -1,6 +1,7 @@
-package bhupendrashekhawat.me.android.amuzeplayer;
+package bhupendrashekhawat.me.android.amuzeplayer.core;
 
 
+import android.media.MediaMetadataRetriever;
 import android.util.Log;
 
 import java.io.File;
@@ -16,6 +17,11 @@ public class MediaManager {
     final String MEDIA_PATH = "/storage/";
     final String SONG_PATH = "songPath";
     final String SONG_TITLE = "songTitle";
+
+    //Constants for Song Info
+    final String SONG_ALBUM = "songAlbum";
+
+
     private ArrayList<HashMap<String, String>> songsList = new ArrayList<HashMap<String, String>>();
     private final String LOG_TAG = MediaManager.class.getSimpleName();
 
@@ -80,6 +86,9 @@ public class MediaManager {
             songsList.add(songMap);
         }
     }
+
+
+
 
 
 

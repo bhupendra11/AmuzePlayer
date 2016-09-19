@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="bhupendrashekhawat.me.android.amuzeplayer.PlayActivity"
+    tools:context=".core.PlayActivity"
     android:weightSum="1">
 
     <FrameLayout
@@ -24,7 +24,9 @@
             android:layout_margin="48dp"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@drawable/album_art_placeholder"
+            android:scaleType="centerCrop"
+            android:background="@mipmap/def_album_art"
+
             />
 
     </FrameLayout>

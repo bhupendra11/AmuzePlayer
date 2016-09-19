@@ -1,4 +1,4 @@
-package bhupendrashekhawat.me.android.amuzeplayer;
+package bhupendrashekhawat.me.android.amuzeplayer.core;
 
 import android.content.Context;
 import android.graphics.Bitmap;

@@ -1,14 +1,62 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="8dp"
+    android:id="@+id/track_item"
+    android:background="#ffffff"
+    >
 
-    <TextView
-        android:text="TextView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/song_item"
-        android:textSize="16dp"
-        android:padding="10dp"
-        android:color="#f3f3f3"/>
+    <ImageView
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="7dp"
+        android:layout_marginBottom="7dp"
+        android:layout_marginRight="7dp"
+        android:id="@+id/album_art_small"
+        android:background="@drawable/album_art_placeholder"/>
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="vertical"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:text="TextView"
+            android:paddingTop="10dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/track_title_view"
+            android:textSize="16sp"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:color="#f3f3f3"
+            android:maxLines="1"
+            android:ellipsize="end"/>
+        <TextView
+            android:text="Unknown"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:paddingBottom="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/track_album_view"
+            android:textSize="12sp"
+
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:color="#f3f3f3"
+            android:maxLines="1"
+            android:ellipsize="end"/>
+    </LinearLayout>
+    <ImageView
+        android:id="@+id/song_options"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:background="@drawable/btn_options"
+        android:layout_gravity="center"
+        />
 </LinearLayout>
