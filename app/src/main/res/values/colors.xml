@@ -1,11 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#cd201f</color>
-    <color name="colorPrimaryDark">@color/red_900</color>
-    <color name="colorAccent">#cd201f</color>
+    <color name="colorPrimary">#001623</color>
+    <color name="colorPrimaryDark">#00101A</color>
+    <color name="colorAccent">#001623</color>
 
+
+    <color name="red_youtube">#cd201f</color>
     <color name="red_300">#FFCDD2</color>
     <color name="red_500">#F44336</color>
     <color name="red_700">#D32F2F</color>
     <color name="red_900">#b71c1c</color>
+
+    <color name="song_item_text_color">#ffffff</color>
 </resources>

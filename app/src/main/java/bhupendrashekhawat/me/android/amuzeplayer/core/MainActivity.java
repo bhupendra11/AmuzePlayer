@@ -3,6 +3,9 @@ package bhupendrashekhawat.me.android.amuzeplayer.core;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -10,9 +13,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ListAdapter;
 import android.widget.ListView;
-import android.widget.SimpleAdapter;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -46,6 +48,18 @@ public class MainActivity extends AppCompatActivity  implements ActivityCompat.O
         final ArrayList<HashMap<String, String>> songsListData = new ArrayList<HashMap<String, String>>();
         utils = new Utilities();
 
+        RelativeLayout listViewActivityLayout = (RelativeLayout) findViewById(R.id.activity_main);
+        Bitmap listViewBackground= BlurBitmap.blurImage(this, BitmapFactory.decodeResource(getResources(),R.drawable.star_wall));
+
+      // listViewActivityLayout.setBackground(new BitmapDrawable(getResources(),listViewBackground));
+
+        if(android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.JELLY_BEAN) {
+            listViewActivityLayout.setBackgroundDrawable(new BitmapDrawable(getResources(),listViewBackground) );
+        } else {
+            listViewActivityLayout.setBackground( new BitmapDrawable(getResources(),listViewBackground));
+        }
+
+        //ContextCompat.get
 
         MediaManager mediaManager = new MediaManager();
 

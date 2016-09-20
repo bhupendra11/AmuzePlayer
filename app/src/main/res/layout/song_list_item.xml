@@ -6,7 +6,6 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="8dp"
     android:id="@+id/track_item"
-    android:background="#ffffff"
     >
 
     <ImageView
@@ -34,6 +33,7 @@
             android:id="@+id/track_title_view"
             android:textSize="16sp"
             android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textColor="@color/song_item_text_color"
             android:color="#f3f3f3"
             android:maxLines="1"
             android:ellipsize="end"/>
@@ -46,7 +46,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/track_album_view"
             android:textSize="12sp"
-
+            android:textColor="@color/song_item_text_color"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:color="#f3f3f3"
             android:maxLines="1"
