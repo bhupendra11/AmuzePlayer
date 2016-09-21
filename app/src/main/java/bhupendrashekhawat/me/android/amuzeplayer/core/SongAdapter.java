@@ -1,8 +1,6 @@
 package bhupendrashekhawat.me.android.amuzeplayer.core;
 
 import android.app.Activity;
-import android.content.Context;
-import android.os.Trace;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -32,7 +30,7 @@ public class SongAdapter extends ArrayAdapter<Track>{
         Track track = getItem(position);
         ViewHolder viewHolder ;
 
-        Log.e("DEBUG", "Track name : "+track.getmTitle());
+        Log.e("DEBUG", "Track name : "+track.getTitle());
 
         if (convertView == null) {
             Log.e("DEBUG", "Inside convertView = null");
@@ -52,10 +50,10 @@ public class SongAdapter extends ArrayAdapter<Track>{
 
         //viewHolder.albumArtView.setAdjustViewBounds(true);
         //viewHolder.albumArtView.setPadding(0,0,0,0);
-        viewHolder.albumArtView.setImageBitmap(track.getmAlbumArt());
+        viewHolder.albumArtView.setImageBitmap(track.getAlbumArt());
 
-        viewHolder.trackTitleView.setText(track.getmTitle());
-        viewHolder.trackAlbumView.setText(track.getmAlbum());
+        viewHolder.trackTitleView.setText(track.getTitle());
+        viewHolder.trackAlbumView.setText(track.getAlbum());
 
 
         return convertView;

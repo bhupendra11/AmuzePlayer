@@ -109,7 +109,7 @@ public class Utilities {
     }
 
     //Get Song Info
-    public Track getTrackInfo(Context context, int songIndex, ArrayList<HashMap<String, String>> songsList) {
+   /* public Track getTrackInfo(Context context, int songIndex, ArrayList<HashMap<String, String>> songsList) {
 
         MediaMetadataRetriever metaRetriever= new MediaMetadataRetriever();
         metaRetriever.setDataSource(songsList.get(songIndex).get(SONG_PATH));
@@ -140,5 +140,5 @@ public class Utilities {
 
         Track track = new Track(mTitle,mAlbum,mArtist,mAlbumArt);
         return  track;
-    }
+    }*/
 }

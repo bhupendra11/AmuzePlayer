@@ -1,9 +1,13 @@
+/*
 package bhupendrashekhawat.me.android.amuzeplayer.core;
 
+import android.content.ComponentName;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.graphics.Bitmap;
 import android.media.MediaPlayer;
 import android.os.Handler;
+import android.os.IBinder;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -20,6 +24,9 @@ import java.util.Random;
 
 import bhupendrashekhawat.me.android.amuzeplayer.R;
 import bhupendrashekhawat.me.android.amuzeplayer.utils.Utilities;
+import bhupendrashekhawat.me.android.amuzeplayer.core.PlayBackService.MusicBinder;
+
+import static bhupendrashekhawat.me.android.amuzeplayer.R.id.songList;
 
 public class PlayActivity extends AppCompatActivity implements MediaPlayer.OnCompletionListener, SeekBar.OnSeekBarChangeListener {
 
@@ -56,6 +63,11 @@ public class PlayActivity extends AppCompatActivity implements MediaPlayer.OnCom
 
     private BlurBitmap blurBitmap;
 
+    //for PlayBackService
+    private PlayBackService playBackService;
+    private Intent playIntent;
+    private boolean musicBound=false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -77,7 +89,7 @@ public class PlayActivity extends AppCompatActivity implements MediaPlayer.OnCom
         songTotalDurationLabel = (TextView) findViewById(R.id.song_total_duration_label);
 
         // Getting all songs list
-        songsList = mediaManager.getPlayList();
+        //songsList = mediaManager.getPlayList();
 
         albumArt = (ImageView) findViewById(R.id.album_art);
 
@@ -102,11 +114,15 @@ public class PlayActivity extends AppCompatActivity implements MediaPlayer.OnCom
 
         Toast.makeText(getApplicationContext(), "Song Selected is " + currentSongIndex ,  Toast.LENGTH_SHORT).show();
 
-        /* Set on click listeners for the playback controls */
+        */
+/* Set on click listeners for the playback controls *//*
 
-        /**
+
+        */
+/**
          * Play button click event
-         * */
+         * *//*
+
         btnPlay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -128,9 +144,11 @@ public class PlayActivity extends AppCompatActivity implements MediaPlayer.OnCom
             }
         });
 
-        /**
+        */
+/**
          * Previous button click event
-         * */
+         * *//*
+
         btnPrevious.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -159,10 +177,12 @@ public class PlayActivity extends AppCompatActivity implements MediaPlayer.OnCom
         });
 
 
-        /**
+        */
+/**
          * Next button click event
          * Plays next song by taking currentSongIndex + 1
-         * */
+         * *//*
+
         btnNext.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -191,10 +211,12 @@ public class PlayActivity extends AppCompatActivity implements MediaPlayer.OnCom
             }
         });
 
-        /**
+        */
+/**
          * Button Click event for Repeat button
          * Enables repeat flag to true
-         * */
+         * *//*
+
         btnLoop.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -215,10 +237,12 @@ public class PlayActivity extends AppCompatActivity implements MediaPlayer.OnCom
             }
         });
 
-        /**
+        */
+/**
          * Button Click event for Shuffle button
          * Enables shuffle flag to true
-         * */
+         * *//*
+
         btnShuffle.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -242,16 +266,39 @@ public class PlayActivity extends AppCompatActivity implements MediaPlayer.OnCom
     }
 
 
+    ///////
+    //connect to the service
+    private ServiceConnection musicConnection = new ServiceConnection(){
 
-    /**
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            MusicBinder binder = (MusicBinder)service;
+            //get service
+            playBackService = binder.getService();
+            //pass list
+            playBackService.setList(songList);
+            musicBound = true;
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            musicBound = false;
+        }
+    };
+
+
+
+    */
+/**
      * Function to play a song
      * @param songIndex - index of song
-     * */
+     * *//*
+
     public void  playSong(int songIndex){
         // Play song
         try {
 
-            changeAlbumArtAndBlur(songIndex);
+            //changeAlbumArtAndBlur(songIndex);
             mp.reset();
             mp.setDataSource(songsList.get(songIndex).get("songPath"));
             mp.prepare();
@@ -280,9 +327,11 @@ public class PlayActivity extends AppCompatActivity implements MediaPlayer.OnCom
         }
     }
 
-    /**
+    */
+/**
      * Update timer on seekbar
-     * */
+     * *//*
+
     public void updateProgressBar() {
         try {
             mHandler.postDelayed(mUpdateTimeTask, 100);
@@ -292,9 +341,11 @@ public class PlayActivity extends AppCompatActivity implements MediaPlayer.OnCom
         }
     }
 
-    /**
+    */
+/**
      * Background Runnable thread
-     * */
+     * *//*
+
     private Runnable mUpdateTimeTask = new Runnable() {
         public void run() {
             try {
@@ -345,9 +396,11 @@ public class PlayActivity extends AppCompatActivity implements MediaPlayer.OnCom
         }
     }
 
-    /**
+    */
+/**
      *
-     * */
+     * *//*
+
     @Override
     public void onProgressChanged(SeekBar seekBar, int progress, boolean fromTouch) {
 
@@ -361,18 +414,22 @@ public class PlayActivity extends AppCompatActivity implements MediaPlayer.OnCom
 
     }
 
-    /**
+    */
+/**
      * When user starts moving the progress handler
-     * */
+     * *//*
+
     @Override
     public void onStartTrackingTouch(SeekBar seekBar) {
         // remove message Handler from updating progress bar
         mHandler.removeCallbacks(mUpdateTimeTask);
     }
 
-    /**
+    */
+/**
      * When user stops moving the progress hanlder
-     * */
+     * *//*
+
     @Override
     public void onStopTrackingTouch(SeekBar seekBar) {
         mHandler.removeCallbacks(mUpdateTimeTask);
@@ -404,3 +461,4 @@ public class PlayActivity extends AppCompatActivity implements MediaPlayer.OnCom
         blurAlbumArt.setImageBitmap(bluredAlbumartBitmap);
     }
 }
+*/
