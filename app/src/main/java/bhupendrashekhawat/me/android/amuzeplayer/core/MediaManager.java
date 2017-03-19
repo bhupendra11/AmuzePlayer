@@ -14,7 +14,7 @@ import java.util.HashMap;
 
 public class MediaManager {
     // SDCard Path
-    final String MEDIA_PATH = "/storage/";
+    final String MEDIA_PATH = "/sdcard/";
     final String SONG_PATH = "songPath";
     final String SONG_TITLE = "songTitle";
 
@@ -65,6 +65,7 @@ public class MediaManager {
             if (listFiles != null && listFiles.length > 0) {
                 for (File file : listFiles) {
                     if (file.isDirectory()) {
+                        Log.d(LOG_TAG, "File isDirectory "+file.getAbsolutePath());
                         scanDirectory(file);
                     } else {
                         addSongToList(file);
